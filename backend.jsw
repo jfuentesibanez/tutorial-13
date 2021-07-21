@@ -1,0 +1,46 @@
+// .jsw files enable you to write functions that run on the server side
+
+// Test any backend function by clicking the "Play" button on the left side of the code panel
+
+// About testing backend functions: https://support.wix.com/en/article/velo-testing-your-backend-functions
+
+// Sample function
+
+import {fetch} from 'wix-fetch';  
+
+export function sentimentAnalysis (term) {
+ return fetch("https://services.demo.akoios.com/huggingface-basic/sentence_classification?param=" + term, {
+             method: 'post',
+ }).then(function(response_sa) {
+  if (response_sa.status >= 200 && response_sa.status < 300)
+    return response_sa.json();
+  else
+   throw new Error(response_sa.statusText);
+ });
+};
+
+export function questionAnswering (context_qa, question_qa) {
+ var data = {context: context_qa, question: question_qa}
+ return fetch("https://services.demo.akoios.com/huggingface-basic/question_answering", {
+             headers: {
+              'Content-Type': 'application/json'},
+             method: 'post',
+             body: JSON.stringify(data)
+ }).then(function(response_qa) {
+  if (response_qa.status >= 200 && response_qa.status < 300)
+   return response_qa.json();
+  else
+   throw new Error(response_qa.statusText);
+ });
+};
+
+export function textGeneration (term) {
+ return fetch("https://services.demo.akoios.com/huggingface-basic/text_generation?param=" + term, {
+             method: 'post',
+ }).then(function(response_tg) {
+  if (response_tg.status >= 200 && response_tg.status < 300)
+   return response_tg.json();
+  else
+   throw new Error(response_tg.statusText);
+ });
+};

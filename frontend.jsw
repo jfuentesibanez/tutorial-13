@@ -1,0 +1,82 @@
+
+import {questionAnswering} from 'backend/predictions.jsw';
+import {sentimentAnalysis} from 'backend/predictions.jsw';
+import {textGeneration} from 'backend/predictions.jsw';
+
+$w.onReady(function () {
+	// Write your JavaScript here
+
+	// To select an element by ID use: $w("#elementID")
+
+	// Click "Preview" to run your code
+});
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export function buttonsa_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	sentimentAnalysis($w("#inputsa").value)
+		.then(response => {
+			
+			// Response preparation
+			var data = response["text/plain"];
+			data = data.replace(/^\[(.+)\]$/,'$1');
+			data = data.replace(/'/g, '"');
+			var jsonData = JSON.parse(data);
+			
+			//Reponse presentation
+			$w("#resultsa").text = "Label: " +jsonData.label +"\nScore: " + jsonData.score;	
+			}
+		);	
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export function buttonqa_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	questionAnswering($w("#inputqa1").value,$w("#inputqa2").value)
+		.then(response => {
+			
+			// Response preparation
+			var data = response["text/plain"];
+			data = data.replace(/^\[(.+)\]$/,'$1');
+			data = data.replace(/'/g, '"');
+			var jsonData = JSON.parse(data);
+			//Reponse presentation
+			$w("#resultqa").text = "<b>Answer: </b>" +jsonData.answer +"\n<b>Score: </b>" + jsonData.score;	
+			}
+		);	
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export function buttontg_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here:
+	textGeneration($w("#inputtg").value)
+		.then(response => {
+			
+			// Response preparation
+			var data = response["text/plain"];
+			data = data.replace(/^\[(.+)\]$/,'$1');
+			data = data.replace(/'/g, '"');
+			var jsonData = JSON.parse(data);
+			var answers="";
+			//Reponse presentation
+			for (let option in jsonData) {
+				var sentence = jsonData[option].sequence.replace('<s>','');
+			    sentence = sentence.replace('</s>','');
+				answers+= sentence + "\n\n";
+			}
+			$w("#resulttg").text = "Proposed Sentences:\n " +answers;
+			}
+		); 
+}
